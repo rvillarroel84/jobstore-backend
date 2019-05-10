@@ -8,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Job {
@@ -16,14 +19,20 @@ public class Job {
 	@Id @GeneratedValue
 	private Long id;
 	
+	
 	@Column(length = 200)
+	@NotNull
+	@Size(min = 1, max = 200)
 	private String name;
 	
+	
 	@Column(length = 250)
+	@Size(min = 1, max = 250)
 	private String description;
 	
 	@Column(name = "publication_date")
 	@Temporal(TemporalType.DATE)
+	@Past
 	private Date publicationDate;
 	
 	@Column(name = "image_url")

@@ -74,7 +74,7 @@ public class JobRepositoryTest {
     
     @Test
     @InSequence(5)
-    public void shouldGetOneBook() {
+    public void shouldGetOneJob() {
         // Count all
         assertEquals(Long.valueOf(1), jobRepository.countAll());
         // Find all
@@ -83,7 +83,7 @@ public class JobRepositoryTest {
 
     @Test
     @InSequence(6)
-    public void shouldDeleteTheCreatedBook() {
+    public void shouldDeleteTheCreatedJob() {
         // Deletes the book
     	jobRepository.delete(jobId);
         // Checks the deleted book
@@ -93,11 +93,29 @@ public class JobRepositoryTest {
 
     @Test
     @InSequence(7)
-    public void shouldGetNoMoreBook() {
+    public void shouldGetNoMoreJob() {
         // Count all
         assertEquals(Long.valueOf(0), jobRepository.countAll());
         // Find all
         assertEquals(0, jobRepository.findAll().size());
+    }
+    
+    /***
+     * 
+     * Bean Validation
+     * @return
+     */
+    @Test(expected = Exception.class)
+    @InSequence(8)
+    public void createInvalidJob() {
+    	Job job = new Job(null, "Trabajo temporal por Jornada", new Date(), "http://google.com.bo");
+    	job = jobRepository.create(job);
+    }
+    
+    @Test(expected = Exception.class)
+    @InSequence(9)
+    public void findWithInvalidId() {
+    	jobRepository.find(null);
     }
     
 	@Deployment
