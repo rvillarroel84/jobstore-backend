@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.rvillarroel.jobstore.model.Job;
+import com.rvillarroel.jobstore.util.TextUtil;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -29,6 +30,9 @@ public class JobRepositoryTest {
   
 	@Inject
     private JobRepository jobRepository;
+	
+    @Inject
+    private TextUtil textUtil;
    
    
     // ======================================
@@ -39,6 +43,7 @@ public class JobRepositoryTest {
     @InSequence(1)
     public void shouldBeDeployed() {
         assertNotNull(jobRepository);
+        assertNotNull(textUtil);
     }
     
     @Test
@@ -54,7 +59,7 @@ public class JobRepositoryTest {
     @InSequence(3)
     public void ShouldCreateAJob(){
     	
-    	Job job = new Job("Necesito Electricista", "Trabajo temporal por Jornada", new Date(), "http://google.com.bo");
+    	Job job = new Job("Necesito      Electricista", "Trabajo temporal por Jornada", new Date(), "http://google.com.bo");
     	job = jobRepository.create(job);
     	assertNotNull(job);
     	assertNotNull(job.getId());
@@ -122,9 +127,9 @@ public class JobRepositoryTest {
     public static Archive<?> createDeploymentPackage() {
 
        return ShrinkWrap.create(JavaArchive.class)
-           .addClass(Job.class)
-           //.addClass(Language.class)
+           .addClass(Job.class)          
            .addClass(JobRepository.class)
+           .addClass(TextUtil.class)
            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
            .addAsManifestResource("META-INF/test-persistence.xml", "persistence.xml");
     }

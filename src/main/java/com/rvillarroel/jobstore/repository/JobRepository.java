@@ -2,6 +2,7 @@ package com.rvillarroel.jobstore.repository;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -9,6 +10,8 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 
 import com.rvillarroel.jobstore.model.Job;
+import com.rvillarroel.jobstore.util.TextUtil;
+
 import static javax.transaction.Transactional.TxType.SUPPORTS;
 import static javax.transaction.Transactional.TxType.REQUIRED;;
 
@@ -19,12 +22,17 @@ public class JobRepository {
 	@PersistenceContext(unitName = "jobStorePU")
 	private EntityManager em;
 	
+	@Inject
+	private TextUtil textUtil;
+	
 	public Job find(@NotNull Long id) {
 		return em.find(Job.class, id);
 	}
 	
 	@Transactional(REQUIRED)
 	public Job create(@NotNull Job job) {
+		
+		job.setName(textUtil.sanitize(job.getName()));
 		em.persist(job);
 		return job;
 	}
