@@ -43,10 +43,10 @@ public class JobRepositoryTest {
     
     @Test
     @InSequence(2)
-    private void ShouldGetNoJob() {
+    public void ShouldGetNoJob() {
     	
     	assertEquals(Long.valueOf(0), jobRepository.countAll());
-    	assertEquals(1, jobRepository.findAll().size());
+    	assertEquals(0, jobRepository.findAll().size());
     	
     }
     
