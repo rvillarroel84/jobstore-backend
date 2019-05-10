@@ -14,6 +14,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.java>1.8</version.java>
         <version.javaee>7.0</version.javaee>
+        <!-- Other -->
+        <version.swagger>1.5.12</version.swagger>
+        <version.swagger.hibernate>1.5.22</version.swagger.hibernate>
         <!-- Test -->
         <version.junit>4.12</version.junit>
         <version.arquillian>1.4.1.Final</version.arquillian>
@@ -24,10 +27,14 @@
         <version.assembly.plugin>3.1.1</version.assembly.plugin>
         <version.compiler.plugin>3.8.0</version.compiler.plugin>
         <version.dependency.plugin>3.1.1</version.dependency.plugin>
+        <version.download.plugin>1.4.1</version.download.plugin>
+        <version.resources.plugin>3.1.0</version.resources.plugin>
+        <version.site.plugin>3.7.1</version.site.plugin>
         <version.surefire.plugin>2.22.1</version.surefire.plugin>
+        <version.swagger.plugin>3.1.8</version.swagger.plugin>
         <version.war.plugin>3.2.2</version.war.plugin>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -39,14 +46,18 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
 
-  <dependencies>
+    <dependencies>
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>${version.javaee}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${version.swagger}</version>
         </dependency>
 
         <!-- TEST -->
@@ -100,6 +111,98 @@
                         <arquillian.launch>arquillian-wildfly-remote</arquillian.launch>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${version.site.plugin}</version>
+            </plugin>
+            
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>${version.swagger.plugin}</version>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <springmvc>false</springmvc>
+                            <locations>com.rvillarroel.jobstore.rest</locations>
+                            <schemes>http,https</schemes>
+                            <host>localhost:8080</host>
+                            <basePath>/jobstore-backend/api</basePath>
+                            <outputFormats>yaml,json</outputFormats>
+                            <info>
+                                <title>BookStore APIs</title>
+                                <version>1.0.0</version>
+                                <description>BookStore APIs exposed from a Java EE back-end to an Angular front-end</description>
+                                <contact>
+                                    <email>antonio.goncalves@gmail.com</email>
+                                    <name>Antonio Goncalves</name>
+                                    <url>https://app.pluralsight.com/library/search?q=Antonio+Goncalves</url>
+                                </contact>
+                            </info>
+                            <swaggerDirectory>${basedir}/src/main/webapp</swaggerDirectory>
+                            <attachSwaggerArtifact>true</attachSwaggerArtifact>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-hibernate-validations</artifactId>
+                        <version>${version.swagger.hibernate}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>${version.download.plugin}</version>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <id>swagger-ui</id>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>https://github.com/swagger-api/swagger-ui/archive/master.tar.gz</url>
+                            <unpack>true</unpack>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${version.resources.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/src/main/webapp/swagger-ui</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/swagger-ui-master/dist</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

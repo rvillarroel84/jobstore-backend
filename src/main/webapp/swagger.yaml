@@ -1,0 +1,140 @@
+---
+swagger: "2.0"
+info:
+  description: "BookStore APIs exposed from a Java EE back-end to an Angular front-end"
+  version: "1.0.0"
+  title: "BookStore APIs"
+  contact:
+    name: "Antonio Goncalves"
+    url: "https://app.pluralsight.com/library/search?q=Antonio+Goncalves"
+    email: "antonio.goncalves@gmail.com"
+host: "localhost:8080"
+basePath: "/jobstore-backend/api"
+tags:
+- name: "Job"
+schemes:
+- "http"
+- "https"
+paths:
+  /jobs:
+    get:
+      tags:
+      - "Job"
+      summary: "Returns all the books"
+      description: ""
+      operationId: "getJobs"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Jobs found"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Job"
+        204:
+          description: "No jobs found"
+    post:
+      tags:
+      - "Job"
+      operationId: "createJob"
+      consumes:
+      - "application/json"
+      parameters: []
+      responses:
+        201:
+          description: "The job is created"
+        415:
+          description: "Format is not JSon"
+  /jobs/count:
+    get:
+      tags:
+      - "Job"
+      summary: "Returns the number of jobs"
+      description: ""
+      operationId: "countJobs"
+      parameters: []
+      responses:
+        200:
+          description: "Number of jobs found"
+          schema:
+            type: "integer"
+            format: "int64"
+        204:
+          description: "No jobs found"
+  /jobs/{id}:
+    get:
+      tags:
+      - "Job"
+      summary: "Retorna un Job dado un identificador"
+      description: ""
+      operationId: "getJob"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+        minimum: 1
+        pattern: "\\d+"
+        format: "int64"
+      responses:
+        200:
+          description: "Job found"
+          schema:
+            $ref: "#/definitions/Job"
+        400:
+          description: "Invalid input. Id cannot be lower than 1"
+        404:
+          description: "Job not found"
+    delete:
+      tags:
+      - "Job"
+      summary: "Deletes a job given an id"
+      description: ""
+      operationId: "deleteJob"
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: "integer"
+        minimum: 1
+        pattern: "\\d+"
+        format: "int64"
+      responses:
+        204:
+          description: "Job has been deleted"
+        400:
+          description: "Invalid input. Id cannot be lower than 1"
+        500:
+          description: "Job not found"
+definitions:
+  Job:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        description: "Identificador"
+      name:
+        type: "string"
+        description: "Name of the Job"
+        minLength: 1
+        maxLength: 200
+      description:
+        type: "string"
+        description: "Descripcion el Trabajo"
+        minLength: 1
+        maxLength: 250
+      publicationDate:
+        type: "string"
+        format: "date-time"
+        description: "Fecha de Publicacion"
+      imageURL:
+        type: "string"
+        description: "Url de la Imagen"
+    description: "Job resource Representation"

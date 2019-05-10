@@ -20,7 +20,13 @@ import javax.ws.rs.core.UriInfo;
 import com.rvillarroel.jobstore.model.Job;
 import com.rvillarroel.jobstore.repository.JobRepository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @Path("/jobs")
+@Api("Job")
 public class JobEndPoint {
 
 	
@@ -29,7 +35,11 @@ public class JobEndPoint {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createBook(Job job, @Context UriInfo uriInfo) {
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "The job is created"),
+        @ApiResponse(code = 415, message = "Format is not JSon")
+    })
+    public Response createJob(Job job, @Context UriInfo uriInfo) {
     	job = jobRepository.create(job);
         URI createdURI = uriInfo.getAbsolutePathBuilder().path(job.getId().toString()).build();
         return Response.created(createdURI).build();
@@ -38,7 +48,13 @@ public class JobEndPoint {
     @GET
     @Path("/{id : \\d+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBook(@PathParam("id") @Min(1) Long id) {
+    @ApiOperation(value = "Retorna un Job dado un identificador", response = Job.class)
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Job found"),
+        @ApiResponse(code = 400, message = "Invalid input. Id cannot be lower than 1"),
+        @ApiResponse(code = 404, message = "Job not found")
+    })
+    public Response getJob(@PathParam("id") @Min(1) Long id) {
         Job job = jobRepository.find(id);
 
         if (job == null)
@@ -49,13 +65,24 @@ public class JobEndPoint {
 
     @DELETE
     @Path("/{id : \\d+}")
-    public Response deleteBook(@PathParam("id") @Min(1) Long id) {
+    @ApiOperation("Deletes a job given an id")
+    @ApiResponses({
+        @ApiResponse(code = 204, message = "Job has been deleted"),
+        @ApiResponse(code = 400, message = "Invalid input. Id cannot be lower than 1"),
+        @ApiResponse(code = 500, message = "Job not found")
+    })
+    public Response deleteJob(@PathParam("id") @Min(1) Long id) {
         jobRepository.delete(id);
         return Response.noContent().build();
     }
     
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Returns all the books", response = Job.class, responseContainer = "List")
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Jobs found"),
+        @ApiResponse(code = 204, message = "No jobs found"),
+    })
 	public Response getJobs() {
 		List<Job> jobs = jobRepository.findAll();
 		
@@ -67,6 +94,11 @@ public class JobEndPoint {
 	
 	@GET
 	@Path("/count")
+	@ApiOperation(value = "Returns the number of jobs", response = Long.class)
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Number of jobs found"),
+        @ApiResponse(code = 204, message = "No jobs found"),
+    })
 	public Response countJobs() {
 				
 		Long nbOfJobs = jobRepository.countAll();

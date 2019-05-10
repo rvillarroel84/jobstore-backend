@@ -12,30 +12,40 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
+@ApiModel(description = "Job resource Representation")
 public class Job {
 	
 
-	@Id @GeneratedValue
+	@Id 
+	@GeneratedValue
+	@ApiModelProperty("Identificador")
 	private Long id;
 	
 	
 	@Column(length = 200)
 	@NotNull
 	@Size(min = 1, max = 200)
+	@ApiModelProperty("Name of the Job")
 	private String name;
 	
 	
 	@Column(length = 250)
 	@Size(min = 1, max = 250)
+	@ApiModelProperty("Descripcion el Trabajo")
 	private String description;
 	
 	@Column(name = "publication_date")
 	@Temporal(TemporalType.DATE)
 	@Past
+	@ApiModelProperty("Fecha de Publicacion")
 	private Date publicationDate;
 	
 	@Column(name = "image_url")
+	@ApiModelProperty("Url de la Imagen")
     private String imageURL;
 	
 	
