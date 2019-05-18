@@ -1,0 +1,1 @@
+mvn -DarchetypeGroupId=org.codehaus.mojo.archetypes -DarchetypeArtifactId=webapp-javaee7 -DarchetypeVersion=1.1 -DgroupId=com.rvillarroel.java-ee-getting-started -DartifactId=jobstore-backend -Dversion=1.0 -Darchetype.interactive=false --batch-mode -Dpackage=com.rvillarroel.jobstore archetype:generate

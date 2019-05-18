@@ -43,6 +43,15 @@
         "tags" : [ "Job" ],
         "operationId" : "createJob",
         "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Job to be created",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Job"
+          }
+        } ],
         "responses" : {
           "201" : {
             "description" : "The job is created"

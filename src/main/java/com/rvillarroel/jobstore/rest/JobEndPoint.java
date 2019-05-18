@@ -22,6 +22,7 @@ import com.rvillarroel.jobstore.repository.JobRepository;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -39,7 +40,7 @@ public class JobEndPoint {
         @ApiResponse(code = 201, message = "The job is created"),
         @ApiResponse(code = 415, message = "Format is not JSon")
     })
-    public Response createJob(Job job, @Context UriInfo uriInfo) {
+    public Response createJob(@ApiParam(value = "Job to be created", required = true)Job job, @Context UriInfo uriInfo) {
     	job = jobRepository.create(job);
         URI createdURI = uriInfo.getAbsolutePathBuilder().path(job.getId().toString()).build();
         return Response.created(createdURI).build();
